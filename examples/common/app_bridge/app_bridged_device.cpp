@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "app_bridged_device.h"
+
 #include <esp_log.h>
 #include <esp_matter.h>
 #include <nvs.h>
 #include <string.h>
 
-#include <app_bridged_device.h>
 #include <esp_matter_mem.h>
 
 // The bridge app can be used only when MAX_BRIDGED_DEVICE_COUNT > 0
@@ -112,6 +113,14 @@ app_bridged_device_address_t app_bridge_blemesh_address(uint16_t blemesh_addr)
 {
     app_bridged_device_address_t bridged_address = {
         .blemesh_addr = blemesh_addr,
+    };
+    return bridged_address;
+}
+
+app_bridged_device_address_t app_bridge_lightitude_address(uint16_t lightitude_addr)
+{
+    app_bridged_device_address_t bridged_address = {
+        .lightitude_addr = lightitude_addr,
     };
     return bridged_address;
 }
@@ -304,6 +313,46 @@ uint16_t app_bridge_get_blemesh_addr_by_matter_endpointid(uint16_t matter_endpoi
         if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH) && current_dev->dev &&
             (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
             return current_dev->dev_addr.blemesh_addr;
+        }
+        current_dev = current_dev->next;
+    }
+    return 0xFFFF;
+}
+
+/** Lightitude Device APIs */
+app_bridged_device_t *app_bridge_get_device_by_lightitude_addr(uint16_t lightitude_addr)
+{
+    app_bridged_device_t *current_dev = g_bridged_device_list;
+    while (current_dev) {
+        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_LIGHTITUDE) && current_dev->dev &&
+            (current_dev->dev_addr.lightitude_addr == lightitude_addr)) {
+            return current_dev;
+        }
+        current_dev = current_dev->next;
+    }
+    return NULL;
+}
+
+uint16_t app_bridge_get_matter_endpointid_by_lightitude_addr(uint16_t lightitude_addr)
+{
+    app_bridged_device_t *current_dev = g_bridged_device_list;
+    while (current_dev) {
+        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_LIGHTITUDE) && current_dev->dev &&
+            (current_dev->dev_addr.lightitude_addr == lightitude_addr)) {
+            return esp_matter::endpoint::get_id(current_dev->dev->endpoint);
+        }
+        current_dev = current_dev->next;
+    }
+    return 0xFFFF;
+}
+
+uint16_t app_bridge_get_lightitude_addr_by_matter_endpointid(uint16_t matter_endpointid)
+{
+    app_bridged_device_t *current_dev = g_bridged_device_list;
+    while (current_dev) {
+        if ((current_dev->dev_type == ESP_MATTER_BRIDGED_DEVICE_TYPE_LIGHTITUDE) && current_dev->dev &&
+            (esp_matter::endpoint::get_id(current_dev->dev->endpoint) == matter_endpointid)) {
+            return current_dev->dev_addr.lightitude_addr;
         }
         current_dev = current_dev->next;
     }

@@ -25,6 +25,8 @@ typedef enum {
     ESP_MATTER_BRIDGED_DEVICE_TYPE_ZIGBEE = 0,
     /** BLE Mesh */
     ESP_MATTER_BRIDGED_DEVICE_TYPE_BLEMESH,
+    /** Lightitude */
+    ESP_MATTER_BRIDGED_DEVICE_TYPE_LIGHTITUDE,
 } app_bridged_device_type_t;
 
 /* Bridged Device Address */
@@ -37,6 +39,10 @@ typedef union {
     /** BLE Mesh */
     struct {
         uint16_t blemesh_addr;
+    };
+    /** Lightitude */
+    struct {
+        uint16_t lightitude_addr;
     };
 } app_bridged_device_address_t;
 
@@ -56,6 +62,8 @@ typedef struct app_bridged_device {
 app_bridged_device_address_t app_bridge_zigbee_address(uint8_t zigbee_endpointid, uint16_t zigbee_shortaddr);
 
 app_bridged_device_address_t app_bridge_blemesh_address(uint16_t blemesh_addr);
+
+app_bridged_device_address_t app_bridge_lightitude_address(uint16_t lightitdue_addr);
 
 /** Bridged Device APIs */
 app_bridged_device_t *app_bridge_create_bridged_device(node_t *node, uint16_t parent_endpoint_id,
@@ -80,3 +88,10 @@ app_bridged_device_t *app_bridge_get_device_by_blemesh_addr(uint16_t blemesh_add
 uint16_t app_bridge_get_matter_endpointid_by_blemesh_addr(uint16_t blemesh_addr);
 
 uint16_t app_bridge_get_blemesh_addr_by_matter_endpointid(uint16_t matter_endpointid);
+
+/** Lightitude Device APIs */
+app_bridged_device_t *app_bridge_get_device_by_lightitude_addr(uint16_t lightitude_addr);
+
+uint16_t app_bridge_get_matter_endpointid_by_lightitude_addr(uint16_t lightitude_addr);
+
+uint16_t app_bridge_get_lightitude_addr_by_matter_endpointid(uint16_t matter_endpointid);
